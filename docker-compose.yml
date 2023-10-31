@@ -1,0 +1,73 @@
+version: '3.9'
+
+networks:
+  transcendence:
+
+
+services:
+  backend:
+    restart: always
+    image: backend
+    container_name: backend
+    build:
+      dockerfile: ./docker/backend/Dockerfile
+    networks:
+      - transcendence
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    tty: true
+    ports:
+      - "3000:3000"
+
+  frontend:
+    restart: always
+    image: frontend
+    container_name: frontend
+    build:
+      dockerfile: ./docker/frontend/Dockerfile
+    networks:
+      - transcendence
+    volumes:
+      - $PWD/frontend/:/app
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    user: ${POSTGRES_USER}
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - transcendence
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 5050:8080
+    networks:
+      - transcendence
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+
+volumes:
+  db:
+    driver: local
