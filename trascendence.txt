@@ -1,0 +1,6 @@
+
+NOTES TAKEN FROM FIRST EVAL OF TRASCENDENCE:
+
+- Development time:
+- Nbr of members:
+- git_repo: git@vogsphere.42wolfsburg.de:vogsphere/intra-uuid-b4ccde28-4490-424e-ae34-b3f4d7401ff6-5274318-mtrietz
